@@ -1,0 +1,242 @@
+/* Main login page: background and card*/
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 50px;
+  background-color: #dfe3e7;
+}
+
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 98%;
+  padding: 20px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+
+.login-details {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  align-self: stretch;
+  flex: 0 0 auto;
+  width: 520px;
+}
+
+.login-details-signup {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  align-self: stretch;
+  flex: 0 0 auto;
+  width: 820px;
+}
+
+
+/* Title */
+.login-label {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: fit-content;
+  padding: 10px 25px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-color: #dee1ff;
+}
+
+.login-title {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  width: 484px;
+  height: 104px;
+  font-family: "Poppins-Bold", Helvetica;
+  font-weight: 700;
+  color: #1e88e5;
+  font-size: 64px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.login-login {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  width: 484px;
+  height: 54px;
+  font-family: "Poppins-Medium", Helvetica;
+  font-weight: 500;
+  color: #111111;
+  font-size: 36px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+
+/* Input fields */
+.login-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.main-input {
+  width: 410px;
+}
+
+.rectangle {
+  display: flex;
+  flex-direction: column;
+  width: 450px;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 10px;
+  justify-content: center;
+}
+
+.input-label {
+  position: relative;
+  width: fit-content;
+  margin-top: -1px;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  color: #10153f;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: normal;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.input-box {
+  display: flex;
+  height: 60px;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 10px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  background-color: #edf0f2;
+  border-radius: 5px;
+  border: 1px solid;
+  border-color: #8f8f8f;
+}
+
+.bottom-section {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  width: 410px;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+}
+
+.input-submit {
+  box-sizing: border-box;
+  display: flex;
+  height: 60px;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 10px;
+  align-self: stretch;
+  width: 100%;
+  background-color: #10153f;
+  border-radius: 20px;
+  border: 1px solid;
+  border-color: #8f8f8f;
+  justify-content: center;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+  
+}
+
+.input-submit:hover {
+  background-color: #162476;
+}
+
+.group {
+  display: flex;
+  flex-direction: row;
+  width: 800px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.signup-link {
+  display: flex;
+  width: 410px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.signup-link-label {
+  position: relative;
+  width: fit-content;
+  margin-top: -1px;
+  font-family: "Poppins-Medium", Helvetica;
+  font-weight: 500;
+  color: transparent;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.span {
+  color: #131313;
+}
+
+.signup-link-text {
+  color: #1e88e5;
+}
+
+
+
+/* Image */
+.login-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  position: relative;
+  flex: 1;
+  align-self: stretch;
+  flex-grow: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  position: relative;
+  object-fit: cover;
+  background-size: cover;
+  background-position: 50% 50%;
+  justify-content: center;
+  align-items: center;
+}
+
+
+

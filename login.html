@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enchain Track</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/globals.css">
+</head>
+
+<body>
+    <div class="login-page">                    <!-- Background-->
+        <div class="login-container">           <!-- Login container: title, form, and picture-->
+            <div class="login-details">         <!-- Login details-->
+                <div class="login-label">
+                    <div class="login-title">Enchain Track</div>
+                    <div class="login-login">Login</div>
+                </div>
+
+                <form id="login-form" class="login-input" action="/login" method="post">
+                    <div class="main-input">
+                        <div class="rectangle">
+                            <label class="input-label" for="email">Email*</label>
+                            <input class="input-box" id="email" name="email" placeholder="Enter your email" type="email" required>
+                        </div>
+                        <div class="rectangle">
+                            <label class="input-label" for="password">Password*</label>
+                            <input class="input-box" id="password" name="password" placeholder="Enter your password" type="password" required>
+                        </div>
+                    </div>
+
+                    <div class="bottom-section">
+                        <button class="input-submit" type="submit">Login</button>
+
+                        <div class="signup-link">
+                            <p class="signup-link-label"><span class="span">Not registered yet?</span>
+                                <a class="signup-link-text" href="/signup.html"> Create a new account</a>
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="login-image"><img class="image" src="img/home-image.png" /></div>
+        </div>
+    </div>
+    <script src="/script.js"></script>
+</body>
+
+</html>

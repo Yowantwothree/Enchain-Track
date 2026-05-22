@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enchain Track</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="globals.css">
+</head>
+
+<body>
+    <div class="login-page">                            <!-- Background-->
+        <div class="login-container">                   <!-- Login container: title, form, and picture-->
+            <div class="login-details-signup">          <!-- Login details-->
+                <div class="login-label">
+                    <div class="login-title">Enchain Track</div>
+                    <div class="login-login">Sign Up</div>
+                </div>
+
+                <form id="signup-form" class="login-input" action="/signup" method="post">
+                    <div class="main-input">
+                        <div class="group">
+                            <div class="rectangle">
+                                <label class="input-label" for="first-name">First Name*</label>
+                                <input class="input-box" id="first-name" name="first-name" placeholder="Enter your first name" type="text" required>
+                            </div>
+                            <div class="rectangle">
+                                <label class="input-label" for="last-name">Last Name*</label>
+                                <input class="input-box" id="last-name" name="last-name" placeholder="Enter your last name" type="text" required>
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <div class="rectangle">
+                                <label class="input-label" for="email">Email*</label>
+                                <input class="input-box" id="email" name="email" placeholder="Enter your email" type="email" required>
+                            </div>
+                            <div class="rectangle">
+                                <label class="input-label" for="phone">Phone Number*</label>
+                                <input class="input-box" id="phone" name="phone" placeholder="Enter your phone number" type="tel" required>
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <div class="rectangle">
+                                <label class="input-label" for="password">Password*</label>
+                                <input class="input-box" id="password" name="password" placeholder="Enter your password" type="password" required>
+                            </div>
+                            <div class="rectangle">
+                                <label class="input-label" for="confirm-password">Confirm Password*</label>
+                                <input class="input-box" id="confirm-password" name="confirm-password" placeholder="Confirm your password" type="password" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bottom-section">
+                        <button class="input-submit" type="submit">Sign Up</button>
+
+                        <div class="signup-link">
+                            <p class="signup-link-label"><span class="span">Already have an account?</span>
+                                <a class="signup-link-text" href="/login.html"> Log in</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+
+            <div class="login-image"><img class="image" src="img/image-3.png" /></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

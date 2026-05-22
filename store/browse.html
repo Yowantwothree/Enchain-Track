@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/globals.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body id="store-browse">
+    <div class="dashboard">
+        <header class="dashboard-header">
+            <div class="header-logo">Enchain Track</div>
+            <div class="header-actions"> <!--add profile pic, name, and dropdown-->
+                <div class="profile"><img class="ellipse-2" src="/img/ellipse-1.png" />
+                    <div class="text-wrapper-12">Ann Lee</div>
+                    <div class="down"><img class="vector-6" src="/img/vector-8.svg" /></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="dashboard-sidebar">
+                <div class="nav-links">
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-15.svg" />
+                        <div class="nav-title">Home</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-19.svg" />
+                        <div class="nav-title">Browse</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/nav-img.svg" />
+                        <div class="nav-title">Cart</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/nav-img2.svg" />
+                        <div class="nav-title">Order</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-9.svg" />
+                        <div class="nav-title">Business</div>
+                    </button>
+                </div>
+                <div class="navigation-indicator" style="top: calc(25px + 65px * 1);"></div>
+                <!--Adjust top to: 25px + 65*(order of link - 1)-->
+            </div>
+
+
+            <div class="dashboard-main-data" style="padding: 25px">
+                <div class="store-background">
+                    <div class="home-deals">
+                        <div class="category-title">
+                            <p class="home-deal-title">All products</p>
+
+                            <input class="search-bar" placeholder="Search Product."></input>
+
+                            <div class="category-selection">
+                            </div>
+                        </div>
+                        <div class="deal-card-group"></div>
+                    </div>
+                    
+                    <div class="home-items">
+                        <div class="item-card-group"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div class="card-modal-overlay" hidden>
+        <div class="card-modal" role="dialog" aria-modal="true">
+            <button type="button" class="modal-close" aria-label="Close details">×</button>
+            <img class="modal-image" src="/img/home-image.png" alt="Item preview" />
+            <div class="modal-details">
+                <h2 class="modal-title">Item name</h2>
+                <p class="modal-subtitle">Category label</p>
+                <p class="modal-description">This is where the full item details appear, including the deal and description.</p>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+                    <label for="modal-quantity" style="font-weight: 500;">Quantity:</label>
+                    <input type="number" id="modal-quantity" min="1" value="1" style="width: 60px; padding: 5px; border: 1px solid #ddd; border-radius: 4px;" />
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="modal-action add-to-cart">Add to cart</button>
+                <button type="button" class="modal-action buy-now">Buy now</button>
+            </div>
+        </div>
+    </div>
+    <script src="/global.js" defer></script>
+    <script src="/store.js" defer></script>
+</body>
+
+</html>
+

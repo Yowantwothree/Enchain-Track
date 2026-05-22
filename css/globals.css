@@ -1,0 +1,30 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0px;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+@font-face {
+  font-family: "Poppins-Bold";
+  src: local("Poppins-Bold");
+}
+
+@font-face {
+  font-family: "Poppins-Medium";
+  src: local("Poppins-Medium");
+}
+
+@font-face {
+  font-family: "Poppins-Regular";
+  src: local("Poppins-Regular");
+}

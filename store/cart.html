@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/globals.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body id="store-cart">
+    <div class="dashboard">
+        <header class="dashboard-header">
+            <div class="header-logo">Enchain Track</div>
+            <div class="header-actions"> <!--add profile pic, name, and dropdown-->
+                <div class="profile"><img class="ellipse-2" src="/img/ellipse-1.png" />
+                    <div class="text-wrapper-12">Ann Lee</div>
+                    <div class="down"><img class="vector-6" src="/img/vector-8.svg" /></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="dashboard-sidebar">
+                <div class="nav-links">
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-15.svg" />
+                        <div class="nav-title">Home</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-19.svg" />
+                        <div class="nav-title">Browse</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/nav-img.svg" />
+                        <div class="nav-title">Cart</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/nav-img2.svg" />
+                        <div class="nav-title">Order</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-9.svg" />
+                        <div class="nav-title">Business</div>
+                    </button>
+                </div>
+                <div class="navigation-indicator" style="top: calc(25px + 65px * 2);"></div>
+                <!--Adjust top to: 25px + 65*(order of link - 1)-->
+            </div>
+
+
+            <div class="dashboard-main-data" style="padding: 25px">
+                <div class="store-background">
+                    <div class="category-title">
+                        <p class="home-deal-title">Cart</p>
+                    </div>
+
+                    <div class="cart-table">
+                        
+                        <div class="cart-table-wrapper">
+                            <table class="product-table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Qty</th>
+                                        <th>Product</th>
+                                        <th>Details</th>
+                                        <th class="text-right">Price</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                </tbody>
+                                <tfoot>
+                                    <tr class="totals-row">
+                                        <td colspan="3">Subtotal</td>
+                                        <td colspan="2" class="text-right subtotal-value">$0.00</td>
+                                    </tr>
+                                    <tr class="totals-row">
+                                        <td colspan="3">Shipping</td>
+                                        <td colspan="2" class="text-right shipping-value">$5.00</td>
+                                    </tr>
+                                    <tr class="totals-row order-total">
+                                        <td colspan="3">Total</td>
+                                        <td colspan="2" class="text-right total-value">$0.00</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="cart-actions">
+                            <button type="button" id="checkoutButton">Checkout Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/global.js" defer></script>
+    <script src="/store.js" defer></script>
+</body>
+
+</html>

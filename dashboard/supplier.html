@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/globals.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <header class="dashboard-header">
+            <div class="header-logo">Enchain Track</div>
+            <div class="header-actions"> <!--add profile pic, name, and dropdown-->
+                <div class="profile"><img class="ellipse-2" src="/img/ellipse-1.png" />
+                    <div class="text-wrapper-12">Ann Lee</div>
+                    <div class="down"><img class="vector-6" src="/img/vector-8.svg" /></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="dashboard-sidebar">
+                <div class="nav-links">
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-15.svg" />
+                        <div class="nav-title">Dashboard</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-19.svg" />
+                        <div class="nav-title">Inventory</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/nav-img.svg" />
+                        <div class="nav-title">Price History</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/nav-img2.svg" />
+                        <div class="nav-title">Sales</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/vector-9.svg" />
+                        <div class="nav-title">Orders</div>
+                    </button>
+                    <button class="link">
+                        <img class="nav-img" src="/img/image.svg" />
+                        <div class="nav-title">Supplier</div>
+                    </button>
+                </div>
+                <div class="navigation-indicator" style="top: 350px;"></div> <!--Adjust top to: 25px + 65*(order of link - 1)-->
+            </div>
+
+            <div class="dashboard-main-data">
+                <div class="title-line" style="width: fit-content; align-self: flex-start;">
+                    <div class="dashboard-title">Supplier Product Report</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/dashboard.js" defer></script>
+    <script src="/global.js" defer></script>
+</body>
+
+</html>
+
