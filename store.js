@@ -33,8 +33,10 @@ async function createDealCard(category, items=null, index=0) {
 		}
 
 		const imageSource = product.product_image || '/img/home-image.png';
+		const priceText = product.product_discount > 0 ? `₱${formatPrice(product.product_price * (1 - product.product_discount / 100))} <s>₱${formatPrice(product.product_price)}</s>` : `₱${formatPrice(product.product_price)}`;
+
 		toAdd += 
-		`<div class="deal-card" data-product-id="${product.product_id}" data-product-image="${imageSource}">
+		`<div class="deal-card" data-product-id="${product.product_id}" data-product-image="${imageSource}" data-product-price="${product.product_price}" data-product-discount="${product.product_discount || 0}" data-product-stock="${product.product_stock || 0}">
 			<div class="deal-card-container" style="background-image: url('${imageSource}');">
 				<div class="deal-card-gradient"></div>
 			</div>
@@ -42,7 +44,7 @@ async function createDealCard(category, items=null, index=0) {
 				<div class="detail-sample1">${product.product_name}</div>
 				<div class="detail-sample2">${product.product_description}</div>
 			</div>
-			<div class="deal-price">₱${formatPrice(product.product_price)}</div>
+			<div class="deal-price">${priceText}</div>
 			${discountText}
 		</div>`;
 	});
@@ -70,14 +72,16 @@ function createItemCard(products, category) {
 		}
 
 		const imageSource = product.product_image || '/img/home-image.png';
+		const priceText = product.product_discount > 0 ? `₱${formatPrice(product.product_price * (1 - product.product_discount / 100))} <s>₱${formatPrice(product.product_price)}</s>` : `₱${formatPrice(product.product_price)}`;
+
 		toAdd += `
-		<div class="item-card" data-product-id="${product.product_id}" data-product-image="${imageSource}">
+		<div class="item-card" data-product-id="${product.product_id}" data-product-image="${imageSource}" data-product-price="${product.product_price}" data-product-discount="${product.product_discount || 0}" data-product-stock="${product.product_stock || 0}">
 			<div class="item-card-container" style="background-image: url('${imageSource}');">
 				<div class="item-card-gradient"></div>
 			</div>
 			${discountText}
 			<div class="item-card-details">
-				<div class="item-price">₱${formatPrice(product.product_price)}</div>
+				<div class="item-price">${priceText}</div>
 				<div class="item-detail1">${product.product_name}</div>
 				<div class="item-detail2">${product.product_description}</div>
 			</div>
@@ -258,7 +262,7 @@ else if (document.body.id === 'store-cart') {
 		userCart.forEach((product) => {
 
 			rowsHtml += `
-			<tr class="cart-item" data-product-id="${product.product_id}" data-unit-price="${product.product_price * (1.00 - product.product_discount / 100)}" data-stock="${product.product_stock || 0}">
+			<tr class="cart-item" data-product-id="${product.product_id}" data-unit-price="${product.product_price}" data-unit-discount="${product.product_discount || 0}" data-stock="${product.product_stock || 0}">
 				<td class="text-center">
 					<input type="number" class="cart-qty" min="1" value="${product.item_quantity}"/>
 				</td>
@@ -288,6 +292,7 @@ else if (document.body.id === 'store-cart') {
 	function updateTotals() {
 		const rows = getCartRows();
 		let subtotal = 0;
+		let discountTotal = 0;
 
 		rows.forEach(row => {
 			const qtyInput = row.querySelector('.cart-qty');
@@ -306,17 +311,23 @@ else if (document.body.id === 'store-cart') {
 			}
 
 			const unitPrice = Number(row.dataset.unitPrice) || 0;
+			const unitDiscount = Number(row.dataset.unitDiscount) || 0;
 			const lineTotal = qty * unitPrice;
 			row.querySelector('.product-price').textContent = formatPrice(lineTotal);
+
+			discountTotal += (unitPrice * qty) * ((unitDiscount) / 100);
 			subtotal += lineTotal;
 		});
 
 		const shipping = rows.length ? shippingCost : 0;
-		const total = subtotal + shipping;
+		const total = subtotal - discountTotal + shipping;
 
-		document.querySelector('.subtotal-value').textContent = formatPrice(subtotal);
-		document.querySelector('.shipping-value').textContent = formatPrice(shipping);
-		document.querySelector('.total-value').textContent = formatPrice(total);
+		if (rows.length > 0) {
+			document.querySelector('.subtotal-value').textContent = formatPrice(subtotal);
+			document.querySelector('.discount-value').textContent = `-${formatPrice(discountTotal)}`;
+			document.querySelector('.shipping-value').textContent = formatPrice(shipping);
+			document.querySelector('.total-value').textContent = formatPrice(total);
+		}
 	}
 
 	function removeRow(event) {
@@ -418,12 +429,15 @@ else if (document.body.id === 'store-order') {
 
 	function getOrderTotal(order) {
 		const items = order.items || [];
-		const subtotal = items.reduce((sum, item) => {
-			const qty = item.quantity;
-			const unitPrice = item.product_price * (1.00 - (item.product_discount) / 100);
-			return sum + qty * unitPrice;
-		}, 0);
-		return { subtotal, total: subtotal + (Number(shippingCost) || 0) };
+		let subtotal = 0;
+		let discountTotal = 0;
+		items.forEach(item => {
+			const qty = item.quantity || 1;
+			const unitPrice = item.product_price || 0;
+			subtotal += qty * unitPrice;
+			discountTotal += (unitPrice * qty) * ((item.product_discount || 0) / 100);
+		});
+		return { subtotal, discountTotal, total: subtotal - discountTotal + shippingCost };
 	}
 
 	async function renderOrders() {
@@ -480,7 +494,7 @@ else if (document.body.id === 'store-order') {
 					<td class="text-center">${itemCount}</td>
 					<td class="text-right">₱${formatPrice(total)}</td>
 					<td class="text-center"><span class="status-pill ${order.order_status.toLowerCase()}">${order.order_status}</span></td>
-					<td class="text-center">${order.order_date}</td>
+					<td class="text-center">${formatDate(order.order_date)}</td>
 				</tr>
 			`;
 		}).join('');
@@ -491,21 +505,22 @@ else if (document.body.id === 'store-order') {
 	}
 
 	function openOrder(orderId) {
-		const order = orderCache.find(item => item.order_id === orderId);
+		const order = orderCache.find(item => String(item.order_id) === String(orderId));
 		if (!order) return;
 
 		const items = order.items || [];
-		const { subtotal, total } = getOrderTotal(order);
-		document.getElementById('orderModalTitle').textContent = `Order ${order.order_id}`;
+		const { subtotal, discountTotal, total } = getOrderTotal(order);
+		document.getElementById('orderModalTitle').textContent = `Order #${order.order_id}`;
 		document.getElementById('orderModalStatus').textContent = `Status: ${order.order_status}`;
-		document.getElementById('orderModalSummary').textContent = `Date: ${order.order_date} • ${items.length} item${items.length > 1 ? 's' : ''}`;
+		document.getElementById('orderModalSummary').textContent = `Date: ${formatDate(order.order_date)} • ${items.length} item${items.length > 1 ? 's' : ''}`;
 
 		const list = document.getElementById('orderItemsList');
 		list.innerHTML = items.map(item => {
 			const qty = item.quantity;
-			const unitPrice = item.product_price * (1.00 - (item.product_discount) / 100);
+			const unitPrice = item.product_price;
 			const name = item.product_name;
 			const details = item.product_description;
+			const discount = item.product_discount || 0;
 			return `
 				<div class="order-detail-item">
 					<div>
@@ -519,6 +534,7 @@ else if (document.body.id === 'store-order') {
 		}).join('');
 
 		document.getElementById('modalSubtotal').textContent = `₱${formatPrice(subtotal)}`;
+		document.getElementById('modalDiscount').textContent = `-₱${formatPrice(discountTotal)}`;
 		document.getElementById('modalShipping').textContent = `₱${formatPrice(shippingCost)}`;
 		document.getElementById('modalTotal').textContent = `₱${formatPrice(total)}`;
 		document.getElementById('orderDetailsOverlay').hidden = false;
@@ -542,8 +558,8 @@ else if (document.body.id === 'store-order') {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-
 	const cardModalOverlay = document.querySelector('.card-modal-overlay');
+	
 	if (cardModalOverlay) {
 		const modalTitle = cardModalOverlay.querySelector('.modal-title');
 		const modalSubtitle = cardModalOverlay.querySelector('.modal-subtitle');
@@ -559,13 +575,15 @@ document.addEventListener('DOMContentLoaded', () => {
 		// Add card pop-up for store cards
 		function openCardModal(card) {
 		const productName = card.querySelector('.detail-sample1, .item-detail1')?.textContent.trim() || 'Item details';
-		const productPrice = card.querySelector('.deal-price, .item-price')?.textContent.trim() || '';
 		const productDescription = card.querySelector('.detail-sample2, .item-detail2')?.textContent.trim() || '';
 		const imageSource = card.dataset.productImage || '/img/home-image.png';
 
+		const discountedPrice = formatPrice((Number(card.dataset.productPrice) || 0) * (1 - (Number(card.dataset.productDiscount) || 0) / 100));
+		const originalPrice = `<s>₱${formatPrice(Number(card.dataset.productPrice) || 0)}</s>`;
+
 		selectedProductId = card.dataset.productId || null;
 		modalTitle.textContent = productName;
-		modalSubtitle.textContent = productPrice;
+		modalSubtitle.innerHTML = `₱${card.dataset.productDiscount > 0 ? `${discountedPrice} ${originalPrice}` : `${formatPrice(Number(card.dataset.productPrice) || 0)}`}`;
 		modalDescription.textContent = productDescription;
 		modalImage.src = imageSource;
 		cardModalOverlay.hidden = false;

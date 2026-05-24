@@ -927,7 +927,7 @@ line-height: normal;
 	color: #6f6f6f;
 }
 
-.product-price, .subtotal-value, .shipping-value, .total-value {
+.product-price, .subtotal-value, .shipping-value, .total-value, .discount-value {
 	font-family: "Poppins-SemiBold", Helvetica;
 	font-weight: 600;
 	color: #141414;

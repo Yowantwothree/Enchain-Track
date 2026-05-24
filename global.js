@@ -14,7 +14,7 @@ function setUpUser() {
 		clearUserSession();
 		window.location.href = '/login.html';
 	} else {
-		document.querySelector('.profile-name').textContent = `${username} ▼`;
+		document.querySelector('.profile-name').textContent = `${escapeHTML(username)} ▼`;
 		CURRENT_USER_ID = userId;
 	}
 }
@@ -107,6 +107,12 @@ function categoryAddPlace(category) {
 			place: arr.length - 2 - index
 		};
 	});
+}
+
+function formatDate(dateString) {
+	const date = new Date("2026-05-23T16:00:00.000Z");
+	const formatted = date.toISOString().split("T")[0];
+	return formatted;
 }
 
 
@@ -202,17 +208,19 @@ async function updateCart(productId, quantity) {
   }
 }
 
-async function quickBuy(productId, quantity) {
+async function quickBuy(productId, quantity, gcashref=null) {
 	try {
-		const quickCart = await fetch(`${API_BASE_URL}/cart/${CURRENT_USER_ID}/${productId}/${quantity}`, {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' }
-		});
-
-		const quickOrder = await fetch(`${API_BASE_URL}/orders/${CURRENT_USER_ID}`, {
+		const quickCart = await fetch(`${API_BASE_URL}/quickbuy`, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' }
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				userId: CURRENT_USER_ID,
+				productId,
+				quantity,
+				gcashref
+			})
 		});
+		
 		return await quickOrder.json();
 	} catch (err) {
 		console.error('Error creating order:', err);
@@ -228,12 +236,14 @@ async function getOrders() {
 	}
 }
 
-async function addOrder() {
+async function addOrder(gcashref=null) {
 	try {
+		const add = gcashref? `/${gcashref}` : '';
 		const response = await fetch(`${API_BASE_URL}/orders/${CURRENT_USER_ID}`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' }
 		});
+		window.location.href = '/store/order.html';
 		return await response.json();
 	} catch (err) {
 		console.error('Error creating order:', err);

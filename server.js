@@ -365,7 +365,7 @@ app.post("/cart/:userId/:productId/:quantity", async (req, res) => {
         // Try update existing item
         let [updateResult] = await db.query(
             `UPDATE order_item
-             SET item_quantity = ?
+             SET item_quantity = item_quantity + ?
              WHERE order_id = ?
              AND product_id = ?`,
             [quantity || 1, orderId, productId]
@@ -378,10 +378,10 @@ app.post("/cart/:userId/:productId/:quantity", async (req, res) => {
                  VALUES (
                     ?,
                     ?,
-                    1,
+                    ?,
                     (SELECT product_price FROM product WHERE product_id = ?)
                  )`,
-                [orderId, productId, productId]
+                [orderId, productId, quantity || 1, productId]
             );
         }
 
@@ -504,7 +504,7 @@ app.get("/orders/:userId", async (req, res) => {
 					WHEN 'delivered' THEN 3
 					ELSE 4
 				END,
-				o.order_date 
+				o.order_date DESC
         `, [userId]);
 
         res.json(orders);
@@ -517,7 +517,6 @@ app.get("/orders/:userId", async (req, res) => {
 
 // add orders for user, turn cart into order
 app.post("/orders/:userId", async (req, res) => {
-	console.log("Received request to place order");
 	const { userId } = req.params;
     if (!userId) { return res.status(400).json({ message: "Missing userId" }); }
 
@@ -557,7 +556,8 @@ app.post("/orders/:userId", async (req, res) => {
         await db.query(`
             UPDATE orders
             SET order_status = 'pending',
-                order_date = NOW()
+                order_date = NOW(),
+                transaction_type = 'c'
             WHERE customer_id = ?
             AND order_status = 'cart'
         `, [userId]);
@@ -570,8 +570,132 @@ app.post("/orders/:userId", async (req, res) => {
     }
 });
 
+// add orders for gcash transaction
+app.post("/orders/:userId/:gcashref", async (req, res) => {
+    const { userId, gcashref } = req.params;
+    if (!userId) { return res.status(400).json({ message: "Missing userId" }); }
+    if (!gcashref) { return res.status(400).json({ message: "Missing gcashref" }); }
 
+    try {
+		const uExists = await customerExists(userId);
+		if (!uExists) { return res.status(404).json({ message: "User not found" }); }
 
+        const [[cartExists]] = await db.query(
+            `SELECT 1 FROM orders WHERE customer_id = ? AND order_status = 'cart' LIMIT 1`,
+            [userId]
+        );
+
+        if (!cartExists) { return res.status(404).json({ message: "Cart not found" }); }
+
+        const [items] = await db.query(`
+            SELECT oi.product_id, SUM(oi.item_quantity) AS qty
+            FROM orders o
+            JOIN order_item oi ON o.order_id = oi.order_id
+            WHERE o.customer_id = ?
+            AND o.order_status = 'cart'
+            GROUP BY oi.product_id
+        `, [userId]);
+
+        for (const item of items) {
+            const [result] = await db.query(`
+                UPDATE product
+                SET product_stock = product_stock - ?
+                WHERE product_id = ?
+                AND product_stock >= ?
+            `, [item.qty, item.product_id, item.qty]);
+
+            if (result.affectedRows === 0) {
+                return res.status(400).json({ message: `Insufficient stock for product ${item.product_id}` });
+            }
+        }
+
+        await db.query(`
+            UPDATE orders
+            SET order_status = 'pending',
+                order_date = NOW(),
+                transaction_type = 'g',
+                transaction_date = NOW(),
+                transaction_total = (SELECT SUM(oi.item_quantity * oi.item_price) FROM order_item oi JOIN orders o ON oi.order_id = o.order_id WHERE o.customer_id = ? AND o.order_status = 'cart')
+            WHERE customer_id = ?
+            AND order_status = 'cart'
+        `, [userId, userId]);
+
+        await db.query(`
+            INSERT INTO gcash (Gorder_id, gcash_reference)
+            VALUES (?, ?)`, [cartExists.order_id, gcashref]);
+
+        res.json({ order: true, message: "Order created" });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Failed to place order" });
+    }
+});
+
+// for quickbuy, gcashref is optional
+app.post("/quickbuy", async (req, res) => {
+    const { userId, productId, quantity, gcashref } = req.body;
+    try {
+        if (!userId || !productId || !quantity) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const uExists = await customerExists(userId);
+        if (!uExists) { return res.status(404).json({ message: "User not found" }); }
+
+        const pExists = await productExists(productId);
+        if (!pExists) { return res.status(404).json({ message: "Product not found" }); }
+
+        const [[product]] = await db.query(`SELECT product_stock FROM product WHERE product_id = ?`, [productId]);
+
+        if (quantity <= 0 || quantity > product.product_stock) {
+            return res.status(400).json({ message: "Invalid quantity" });
+        }
+
+        await updateProductStock(productId, quantity);
+
+        const [[order]] = await db.query(`
+            INSERT INTO orders (customer_id, order_date, order_status, transaction_type)
+            VALUES (?, NOW(), 'pending', ?)
+        `, [userId, gcashref ? 'g' : 'c']);
+
+        await db.query(`
+            INSERT INTO order_item (order_id, product_id, item_quantity, item_price)
+            VALUES (?, ?, ?, (SELECT product_price FROM product WHERE product_id = ?))
+        `, [order.order_id, productId, quantity, productId]);
+
+        if (gcashref) {
+            await db.query(`
+                UPDATE orders
+                SET transaction_date = NOW(),
+                    transaction_total = (SELECT SUM(item_quantity * item_price) FROM order_item WHERE order_id = ?)
+                WHERE order_id = ?
+            `, [order.order_id, order.order_id]);
+
+            await db.query(`
+                INSERT INTO gcash (Gorder_id, gcash_reference)
+                VALUES (?, ?)`, [order.order_id, gcashref]);
+
+            await db.query(`
+                UPDATE orders
+                SET transaction_total = (SELECT SUM(item_quantity * item_price) FROM order_item WHERE order_id = ?)
+                WHERE order_id = ?
+            `, [order.order_id, order.order_id]);
+            }
+        
+        await db.query(`
+            UPDATE product
+            SET product_stock = product_stock - ?
+            WHERE product_id = ?
+        `, [quantity, productId]);
+
+        res.json({ order: true, message: "Order created" });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Failed to place order" });
+    }
+});
 
 
 
